@@ -19,11 +19,17 @@ services:
       - 8080:8080/tcp
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
+    healthcheck:
+      test: ["CMD", "bash", "-c", "ping -c 1 1.1.1.1 && ip link show pl-waw-wg-101"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
     
   qbittorrent:
     depends_on:
-      - wireguard
+      wireguard:
+        condition: service_healthy
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     network_mode: "container:wireguard"
@@ -36,7 +42,7 @@ services:
     volumes:
       - /etc/docker/qbittorrent/config/qbittorrent/appdata:/config
       - /mnt/media/downloads:/downloads
-    restart: unless-stopped
+    restart: unless-stopped 
 
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
