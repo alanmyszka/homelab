@@ -41,10 +41,12 @@ services:
       - TORRENTING_PORT=6881
     volumes:
       - /etc/docker/qbittorrent/config/qbittorrent/appdata:/config
-      - /mnt/media/downloads:/downloads
-    restart: unless-stopped 
+      - /mnt/media/data/downloads:/data/downloads
+    restart: unless-stopped
 
   sonarr:
+    depends_on:
+      - qbittorrent
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     environment:
@@ -53,13 +55,15 @@ services:
       - TZ=Europe/Warsaw
     volumes:
       - /etc/docker/sonarr/config:/config
-      - /mnt/media/Seriale:/tv
-      - /mnt/media/downloads:/downloads
+      - /mnt/media/data/tv:/data/tv
+      - /mnt/media/data/downloads:/data/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
 
   radarr:
+    depends_on:
+      - qbittorrent
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     environment:
@@ -68,8 +72,8 @@ services:
       - TZ=Europe/Warsaw
     volumes:
       - /etc/docker/radarr/config:/config
-      - /mnt/media/Filmy:/movies
-      - /mnt/media/downloads:/downloads
+      - /mnt/media/data/movies:/data/movies
+      - /mnt/media/data/downloads:/data/downloads
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -92,7 +96,7 @@ services:
     container_name: jellyseerr
     environment:
       - LOG_LEVEL=debug
-      - TZ=Asia/Tashkent
+      - TZ=Europe/Warsaw
       - PORT=5055
     ports:
       - 5055:5055
@@ -125,8 +129,8 @@ services:
       - TZ=Europe/Warsaw
     volumes:
       - /etc/docker/bazarr/config:/config
-      - /mnt/media/Filmy:/movies
-      - /mnt/media/Seriale:/tv
+      - /mnt/media/data/movies:/data/movies
+      - /mnt/media/data/tv:/data/tv
     ports:
       - 6767:6767
     restart: unless-stopped
