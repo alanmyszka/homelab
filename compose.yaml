@@ -42,6 +42,12 @@ services:
     volumes:
       - ${CONFIG}/qbittorrent/config/qbittorrent/appdata:/config
       - ${DATA}/downloads:/data/downloads
+    healthcheck:
+      test: ["CMD", "bash", "-c", "ip link show pl-waw-wg-101 > /dev/null && curl -sf http://localhost:8080 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
     restart: unless-stopped
 
   sonarr:
