@@ -6,11 +6,11 @@ services:
       - NET_ADMIN
       - SYS_MODULE
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Warsaw
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/docker/wireguard/config:/config
+      - ${CONFIG}/wireguard/config:/config
       - /lib/modules:/lib/modules
     ports:
       - 51820:51820/udp
@@ -34,14 +34,14 @@ services:
     container_name: qbittorrent
     network_mode: "container:wireguard"
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Warsaw
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
       - WEBUI_PORT=8080
       - TORRENTING_PORT=6881
     volumes:
-      - /etc/docker/qbittorrent/config/qbittorrent/appdata:/config
-      - /mnt/media/data/downloads:/data/downloads
+      - ${CONFIG}/qbittorrent/config/qbittorrent/appdata:/config
+      - ${DATA}/downloads:/data/downloads
     restart: unless-stopped
 
   sonarr:
@@ -50,13 +50,13 @@ services:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Warsaw
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/docker/sonarr/config:/config
-      - /mnt/media/data/tv:/data/tv
-      - /mnt/media/data/downloads:/data/downloads
+      - ${CONFIG}/sonarr/config:/config
+      - ${DATA}/tv:/data/tv
+      - ${DATA}/downloads:/data/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -67,13 +67,13 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Warsaw
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/docker/radarr/config:/config
-      - /mnt/media/data/movies:/data/movies
-      - /mnt/media/data/downloads:/data/downloads
+      - ${CONFIG}/radarr/config:/config
+      - ${DATA}/movies:/data/movies
+      - ${DATA}/downloads:/data/downloads
     ports:
       - 7878:7878
     restart: unless-stopped
@@ -82,11 +82,11 @@ services:
     image: lscr.io/linuxserver/prowlarr:latest
     container_name: prowlarr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Warsaw
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/docker/prowlarr/config:/config
+      - ${CONFIG}/prowlarr/config:/config
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -96,12 +96,12 @@ services:
     container_name: jellyseerr
     environment:
       - LOG_LEVEL=debug
-      - TZ=Europe/Warsaw
+      - TZ=${TZ}
       - PORT=5055
     ports:
       - 5055:5055
     volumes:
-      - /etc/docker/jellyseerr/config:/app/config
+      - ${CONFIG}/jellyseerr/config:/app/config
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/status || exit 1
       start_period: 20s
@@ -124,13 +124,13 @@ services:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Warsaw
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      - /etc/docker/bazarr/config:/config
-      - /mnt/media/data/movies:/data/movies
-      - /mnt/media/data/tv:/data/tv
+      - ${CONFIG}/bazarr/config:/config
+      - ${DATA}/movies:/data/movies
+      - ${DATA}/tv:/data/tv
     ports:
       - 6767:6767
     restart: unless-stopped
