@@ -42,6 +42,7 @@ services:
     volumes:
       - ${CONFIG}/qbittorrent/config/qbittorrent/appdata:/config
       - ${DATA}/downloads:/data/downloads
+    entrypoint: ["/bin/sh", "-c", "while [ ! -d /data/downloads ]; do echo 'Waiting for /data/downloads'; sleep 5; done; exec /init"]
     healthcheck:
       test: ["CMD", "bash", "-c", "ip link show pl-waw-wg-101 > /dev/null && curl -sf http://localhost:8080 || exit 1"]
       interval: 30s
@@ -51,8 +52,6 @@ services:
     restart: always
 
   sonarr:
-    depends_on:
-      - qbittorrent
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     environment:
@@ -61,15 +60,12 @@ services:
       - TZ=${TZ}
     volumes:
       - ${CONFIG}/sonarr/config:/config
-      - ${DATA}/tv:/data/tv
-      - ${DATA}/downloads:/data/downloads
+      - ${DATA}:/data
     ports:
       - 8989:8989
     restart: unless-stopped
 
   radarr:
-    depends_on:
-      - qbittorrent
     image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     environment:
@@ -78,8 +74,7 @@ services:
       - TZ=${TZ}
     volumes:
       - ${CONFIG}/radarr/config:/config
-      - ${DATA}/movies:/data/movies
-      - ${DATA}/downloads:/data/downloads
+      - ${DATA}:/data
     ports:
       - 7878:7878
     restart: unless-stopped
