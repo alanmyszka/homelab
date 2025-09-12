@@ -42,7 +42,7 @@ services:
     volumes:
       - ${CONFIG}/qbittorrent/config/qbittorrent/appdata:/config
       - ${DATA}/downloads:/data/downloads
-    entrypoint: ["/bin/sh", "-c", "while [ ! -d /data/downloads ]; do echo 'Waiting for /data/downloads'; sleep 5; done; exec /init"]
+    entrypoint: ["/bin/sh", "-c", "while [ ! -d /data/downloads ] || [ ! -d /config ]; do echo 'Waiting for /data/downloads and /config'; sleep 5; done; exec /init"]
     healthcheck:
       test: ["CMD", "bash", "-c", "ip link show pl-waw-wg-101 > /dev/null && curl -sf http://localhost:8080 || exit 1"]
       interval: 30s
