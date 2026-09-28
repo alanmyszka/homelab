@@ -1,0 +1,11 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    ports:
+      - "8096:8096"
+    volumes:
+      - /etc/docker/jellyfin/config:/config
+      - /mnt/media/data/movies:/media/movies:ro
+      - /mnt/media/data/tv:/media/tv:ro
+    restart: unless-stopped
