@@ -1,4 +1,4 @@
-# my homelab
+# Homelab
 
 ## setup
 
