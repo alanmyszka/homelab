@@ -1,0 +1,39 @@
+services:
+  avahi:
+    image: flungo/avahi:latest
+    container_name: avahi
+    network_mode: host
+
+    environment:
+      SERVER_ALLOW_INTERFACES: eth0
+      SERVER_USE_IPV4: "yes"
+      SERVER_USE_IPV6: "no"
+      SERVER_ENABLE_DBUS: "yes"
+
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add --no-cache avahi-tools dbus
+
+        mkdir -p /run/dbus
+        dbus-daemon --system --fork
+
+        exec /opt/entrypoint.sh &
+        AVAHI_PID=$$!
+
+        sleep 15
+
+        avahi-publish -a -R homarr.local 192.168.1.28 &
+        avahi-publish -a -R jellyseerr.local 192.168.1.28 &
+        avahi-publish -a -R jellyfin.local 192.168.1.28 &
+        avahi-publish -a -R qbittorrent.local 192.168.1.28 &
+        avahi-publish -a -R bazarr.local 192.168.1.28 &
+        avahi-publish -a -R flaresolverr.local 192.168.1.28 &
+        avahi-publish -a -R prowlarr.local 192.168.1.28 &
+        avahi-publish -a -R radarr.local 192.168.1.28 &
+        avahi-publish -a -R sonarr.local 192.168.1.28 &
+
+        wait $$AVAHI_PID
+
+    restart: unless-stopped
