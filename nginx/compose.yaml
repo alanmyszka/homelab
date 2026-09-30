@@ -1,0 +1,8 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    network_mode: host
+    volumes:
+      - /etc/docker/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
